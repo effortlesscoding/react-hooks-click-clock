@@ -4,6 +4,9 @@ import { ApiState } from '../../common/types/api';
 import VideoCard from './videoCard';
 import './videosFeed.css';
 
+const skeletonImageUrl =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mN8Xw8AAmMBcHOnfc4AAAAASUVORK5CYII=';
+
 function VideosFeed() {
   const { state, actions } = useVideoLinksStore();
   const loadVideosFn = actions.loadVideos;
@@ -14,7 +17,7 @@ function VideosFeed() {
 
   return (
     <div className="App">
-      <button onClick={loadVideosFn}>Re-load</button>
+      <button onClick={loadVideosFn}>Force fetch more</button>
       {(() => {
         switch (state.apiState) {
           case ApiState.INITIAL:
@@ -28,10 +31,10 @@ function VideosFeed() {
                   videoUrl=""
                   videoId="1"
                   videoThumbnail="http://nowhere.com"
-                  userAvatarUrl=""
-                  userDisplayName="______"
+                  userAvatarUrl={skeletonImageUrl}
+                  userDisplayName="__________"
                   userId="______"
-                  description="_________"
+                  description="____________________________________"
                 />
               </div>
             );
@@ -48,6 +51,8 @@ function VideosFeed() {
                     userDisplayName={data.userDisplayName}
                     userId={data.userId}
                     description={data.description}
+                    tags={data.tags}
+                    sound={data.sound}
                   />
                 ))}
               </div>

@@ -26,7 +26,9 @@ class ClickClockResource {
 					userAvatarUrl = "https://i.guim.co.uk/img/media/8a13052d4db7dcd508af948e5db7b04598e03190/0_294_5616_3370/master/5616.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=bcaa4eed2c1e6dab61c41a61e41433d9",
 					userId = "ABCUser 1",
 					userDisplayName = "Rosetta Johnson",
-					description = "I found that Earth is round"
+					description = "I found that Earth is round",
+					tags = listOf("cats", "animals"),
+					sound = CCSound(displayName = "Nice sound", id="sound")
 			),
 			ClickClock(
 					videoId = 2,
@@ -35,7 +37,9 @@ class ClickClockResource {
 					userAvatarUrl = "https://i.guim.co.uk/img/media/8a13052d4db7dcd508af948e5db7b04598e03190/0_294_5616_3370/master/5616.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=bcaa4eed2c1e6dab61c41a61e41433d9",
 					userId = "ABCUser 2",
 					userDisplayName = "Rosetta Johnson",
-					description = "I found that Earth is round"
+					description = "I found that Earth is round",
+					tags = listOf("cats", "animals"),
+					sound = CCSound(displayName = "Nice sound", id="sound")
 			),
 			ClickClock(
 					videoId = 3,
@@ -44,7 +48,9 @@ class ClickClockResource {
 					userAvatarUrl = "https://i.guim.co.uk/img/media/8a13052d4db7dcd508af948e5db7b04598e03190/0_294_5616_3370/master/5616.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=bcaa4eed2c1e6dab61c41a61e41433d9",
 					userId = "ABCUser 3",
 					userDisplayName = "Rosetta Johnson",
-					description = "I found that Earth is round"
+					description = "I found that Earth is round",
+					tags = listOf("cats", "animals"),
+					sound = CCSound(displayName = "Nice sound", id="sound")
 			),
 			ClickClock(
 					videoId = 4,
@@ -53,7 +59,9 @@ class ClickClockResource {
 					userAvatarUrl = "https://i.guim.co.uk/img/media/8a13052d4db7dcd508af948e5db7b04598e03190/0_294_5616_3370/master/5616.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=bcaa4eed2c1e6dab61c41a61e41433d9",
 					userId = "ABCUser 4",
 					userDisplayName = "Rosetta Johnson",
-					description = "I found that Earth is round"
+					description = "I found that Earth is round",
+					tags = listOf("cats", "animals"),
+					sound = CCSound(displayName = "Nice sound", id="sound")
 			)
 		)
 		TimeUnit.SECONDS.sleep(2L);
@@ -64,6 +72,11 @@ class ClickClockResource {
 	}
 }
 
+data class CCSound(
+	val displayName: String,
+	val id: String
+)
+
 data class ClickClock(
 		val videoId: Int,
 		val videoUrl: String,
@@ -71,7 +84,9 @@ data class ClickClock(
 		val userAvatarUrl: String,
 		val userId: String,
 		val userDisplayName: String,
-		val description: String
+		val description: String,
+		val tags: List<String>,
+		val sound: CCSound
 )
 
 data class ClickClockResponse(val continuationToken: Int, val clickClocks: List<ClickClock>)
