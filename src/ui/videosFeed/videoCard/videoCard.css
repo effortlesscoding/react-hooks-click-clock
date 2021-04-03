@@ -127,6 +127,10 @@
 	display: inline-block;
 }
 
+.videoCardTop__userId {
+	text-decoration: none;
+}
+
 .videoCard__container.skeleton a {
 	color: transparent;
 	text-decoration: none;
