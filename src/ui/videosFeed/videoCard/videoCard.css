@@ -1,0 +1,55 @@
+.videoCard__container {
+	display: flex;
+	width: 100%;
+}
+.videoCardTop__container {
+	display: flex;
+	flex: 1;
+}
+
+.videoCardTop__container img {
+	height: 64px;
+	width: 64px;
+	object-fit: cover;
+}
+
+.videoCardTop__user {
+	width: 100%;
+	text-align: left;
+}
+
+.videoCardTop__user h3 {
+	margin: 0;
+	display: inline-block;
+	text-decoration: inherit;
+}
+
+.videoCardTop__userDisplayName {
+	text-decoration: none;
+}
+
+/** Skeleton */
+.videoCard__container.skeleton img {
+	background-color: #ececec;
+	border: 0;
+	opacity: 0;
+}
+
+.videoCard__container.skeleton h3 {
+	color: transparent;
+}
+
+.videoCard__container.skeleton a {
+	background-color: #ececec;
+	color: transparent;
+}
+
+.videoCard__container.skeleton a {
+	text-decoration: none;
+	pointer-events: none;
+}
+
+.videoCard__container.skeleton .videoCardTop__description span {
+	background-color: #ececec;
+	color: transparent;
+}
