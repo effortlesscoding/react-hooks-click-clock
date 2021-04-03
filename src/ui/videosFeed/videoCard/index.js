@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import SoundIcon from '../../../common/ui/icons/soundIcon';
 import VideoPlayer from './videoPlayer';
 import './videoCard.css';
+import { useVideoLinksUIStore } from '../../../common/stores/videoLinksUiStore';
 
 const VideoCard = ({
   isSkeleton,
@@ -15,10 +16,14 @@ const VideoCard = ({
   tags,
   sound
 }) => {
+  const { actions, state: uiState } = useVideoLinksUIStore();
+  const mainContainerRef = useRef();
   const linkAvatar = useRef();
   const linkUserIdPrimary = useRef();
   const linkUserIdSecondary = useRef();
   const userHref = `http://google/com?search=${userId}`;
+
+  const isCurrentlyPlaying = uiState.currentPlayingVideoId && uiState.currentPlayingVideoId.videoId === videoId;
 
   /**
 	 * Binding stuff using Vanilla JS
@@ -27,21 +32,26 @@ const VideoCard = ({
   useLayoutEffect(() => {
     const allAnchors = [ linkAvatar.current, linkUserIdPrimary.current, linkUserIdSecondary.current ];
     function onMouseOver(e) {
+      e.stopPropagation();
       linkUserIdPrimary.current.style.textDecoration = 'underline';
     }
     function onMouseLeave(e) {
+      e.stopPropagation();
       linkUserIdPrimary.current.style.textDecoration = 'none';
     }
-
     if (allAnchors.every((anchor) => !!anchor)) {
       allAnchors.forEach((anchor) => {
         anchor.addEventListener('mouseover', onMouseOver);
         anchor.addEventListener('mouseleave', onMouseLeave);
       });
     }
+    actions.subscribeVideoCard(videoId, mainContainerRef.current);
+    return () => {
+      actions.unsubscribeVideoCard(videoId);
+    };
   }, []);
   return (
-    <div className={`videoCard__container ${isSkeleton ? 'skeleton' : ''}`}>
+    <div className={`videoCard__container ${isSkeleton ? 'skeleton' : ''}`} ref={mainContainerRef}>
       <a ref={linkAvatar} title={`Open ${userId} link`} className="videoCardTop__avatar" href={userHref}>
         <img src={userAvatarUrl} alt="" />
       </a>
@@ -77,7 +87,15 @@ const VideoCard = ({
             </a>
           </div>
         )}
-        {!isSkeleton && <VideoPlayer videoUrl={videoUrl} videoThumbnailUrl={videoThumbnail} />}
+        {!isSkeleton && (
+          <VideoPlayer
+            isCurrent={isCurrentlyPlaying}
+            videoUrl={videoUrl}
+            videoThumbnailUrl={videoThumbnail}
+            muted={uiState.muted}
+            onToggleMute={actions.onToggleMute}
+          />
+        )}
       </div>
     </div>
   );
