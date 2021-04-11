@@ -1,4 +1,4 @@
-import { useMemo, createContext, useCallback, useContext, useEffect, useState, useLayoutEffect } from 'react';
+import { useMemo, createContext, useCallback, useContext, useEffect, useState, useLayoutEffect, useRef } from 'react';
 import { ApiState } from '../types/api';
 import { request } from '../utils/http';
 
@@ -27,7 +27,8 @@ export const VideoLinksContextProvider = ({ children }) => {
       apiState,
       videos,
       continuationToken,
-      lastError
+      lastError,
+      canLoadMore: continuationToken !== null || apiState === ApiState.INITIAL
     }),
     [ apiState, videos, continuationToken, lastError ]
   );
@@ -54,8 +55,9 @@ export const VideoLinksContextProvider = ({ children }) => {
   const loadVideos = useCallback(
     () => {
       setApiState(ApiState.LOADING);
+      const after = videos[videos.length - 1] ? videos[videos.length - 1].videoId : null;
       request
-        .get('/click-clocks')
+        .get('/click-clocks' + (Number.isFinite(after) ? `?after=${after}` : ''))
         .then((response) => {
           addVideos(response.clickClocks, response.continuationToken);
           setApiState(ApiState.SUCCESS);
@@ -66,12 +68,10 @@ export const VideoLinksContextProvider = ({ children }) => {
           setLastError(error);
         });
     },
-    [ addVideos ]
+    [ addVideos, videos ]
   );
 
-  const actions = {
-    loadVideos
-  };
+  const actions = useMemo(() => ({ loadVideos }), [ loadVideos ]);
 
   return <VideoLinksContext.Provider value={{ state, actions }}>{children}</VideoLinksContext.Provider>;
 };

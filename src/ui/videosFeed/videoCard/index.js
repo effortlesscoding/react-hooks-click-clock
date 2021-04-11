@@ -30,6 +30,9 @@ const VideoCard = ({
 	 * Maybe just for the sake of demonstrating useRef.
 	*/
   useLayoutEffect(() => {
+    if (isSkeleton) {
+      return;
+    }
     const allAnchors = [ linkAvatar.current, linkUserIdPrimary.current, linkUserIdSecondary.current ];
     function onMouseOver(e) {
       e.stopPropagation();
@@ -45,11 +48,13 @@ const VideoCard = ({
         anchor.addEventListener('mouseleave', onMouseLeave);
       });
     }
+    console.log('subscribe!', videoId);
     actions.subscribeVideoCard(videoId, mainContainerRef.current);
     return () => {
       actions.unsubscribeVideoCard(videoId);
     };
   }, []);
+  console.log('videoId::', videoId);
   return (
     <div className={`videoCard__container ${isSkeleton ? 'skeleton' : ''}`} ref={mainContainerRef}>
       <a ref={linkAvatar} title={`Open ${userId} link`} className="videoCardTop__avatar" href={userHref}>

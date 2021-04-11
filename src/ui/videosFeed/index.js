@@ -17,7 +17,7 @@ function VideosFeed() {
   const { actions, state } = useVideoLinksStore();
   const loadVideosFn = actions.loadVideos;
   const { onScrollContainer } = uiActions;
-  const apiState = state.apiState;
+  const { apiState, canLoadMore } = state;
   useLayoutEffect(() => {
     loadVideosFn();
   }, []);
@@ -39,9 +39,14 @@ function VideosFeed() {
     },
     [ onScrollContainer ]
   );
-  const handleOnEnterWaypoint = useCallback((e) => {
-    console.log('>>> ENTER');
-  }, []);
+  const handleOnEnterWaypoint = useCallback(
+    (e) => {
+      if (apiState === ApiState.SUCCESS && canLoadMore) {
+        loadVideosFn();
+      }
+    },
+    [ loadVideosFn, canLoadMore, apiState ]
+  );
   return (
     <div className="videosFeedScrollArea" ref={mainContainerRef} onScroll={onScroll}>
       <div className="videosFeed__scrollableArea">
@@ -52,47 +57,33 @@ function VideosFeed() {
           <Sidebar />
         </div>
         <main className="videosFeed__container">
-          {(() => {
-            switch (apiState) {
-              case ApiState.INITIAL:
-                return null;
-              case ApiState.LOADING:
-                return (
-                  <VideoCard
-                    isSkeleton
-                    key="1"
-                    videoUrl=""
-                    videoId="1"
-                    videoThumbnail="http://nowhere.com"
-                    userAvatarUrl={skeletonImageUrl}
-                    userDisplayName="__________"
-                    userId="______"
-                    description="____________________________________"
-                  />
-                );
-              case ApiState.SUCCESS:
-                return (
-                  <React.Fragment>
-                    {state.videos.map((data) => (
-                      <VideoCard
-                        key={data.userId}
-                        videoUrl={data.videoUrl}
-                        videoId={data.videoId}
-                        videoThumbnail={data.videoThumbnail}
-                        userAvatarUrl={data.userAvatarUrl}
-                        userDisplayName={data.userDisplayName}
-                        userId={data.userId}
-                        description={data.description}
-                        tags={data.tags}
-                        sound={data.sound}
-                      />
-                    ))}
-                  </React.Fragment>
-                );
-              default:
-                return null;
-            }
-          })()}
+          {state.videos.map((data) => (
+            <VideoCard
+              key={data.userId}
+              videoUrl={data.videoUrl}
+              videoId={data.videoId}
+              videoThumbnail={data.videoThumbnail}
+              userAvatarUrl={data.userAvatarUrl}
+              userDisplayName={data.userDisplayName}
+              userId={data.userId}
+              description={data.description}
+              tags={data.tags}
+              sound={data.sound}
+            />
+          ))}
+          {apiState === ApiState.LOADING && (
+            <VideoCard
+              isSkeleton
+              key="1"
+              videoUrl=""
+              videoId="1"
+              videoThumbnail="http://nowhere.com"
+              userAvatarUrl={skeletonImageUrl}
+              userDisplayName="__________"
+              userId="______"
+              description="____________________________________"
+            />
+          )}
         </main>
       </div>
       <ScrollWaypoint onEnter={handleOnEnterWaypoint} />
