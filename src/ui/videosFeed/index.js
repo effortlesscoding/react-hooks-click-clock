@@ -1,5 +1,6 @@
 import { useVideoLinksStore } from '../../common/stores/videoLinksStore';
 import { useVideoLinksUIStore } from '../../common/stores/videoLinksUiStore';
+import ScrollWaypoint from '../../common/ui/scrollWaypoint';
 import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { ApiState } from '../../common/types/api';
 import VideoCard from './videoCard';
@@ -34,11 +35,13 @@ function VideosFeed() {
 
   const onScroll = useCallback(
     (e) => {
-      console.log('onScroll::', e.target.scrollTop);
       onScrollContainer(e.target);
     },
     [ onScrollContainer ]
   );
+  const handleOnEnterWaypoint = useCallback((e) => {
+    console.log('>>> ENTER');
+  }, []);
   return (
     <div className="videosFeedScrollArea" ref={mainContainerRef} onScroll={onScroll}>
       <div className="videosFeed__scrollableArea">
@@ -92,6 +95,7 @@ function VideosFeed() {
           })()}
         </main>
       </div>
+      <ScrollWaypoint onEnter={handleOnEnterWaypoint} />
     </div>
   );
 }
